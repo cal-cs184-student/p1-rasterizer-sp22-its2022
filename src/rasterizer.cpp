@@ -17,12 +17,19 @@ namespace CGL {
   }
 
   // Used by rasterize_point and rasterize_line
-  void RasterizerImp::fill_pixel(size_t x, size_t y, Color c) {
+  void RasterizerImp::fill_pixel(size_t x, size_t y, Color c, int sample_no) {
     // TODO: Task 2: You might need to this function to fix points and lines (such as the black rectangle border in test4.svg)
     // NOTE: You are not required to implement proper supersampling for points and lines
     // It is sufficient to use the same color for all supersamples of a pixel for points and lines (not triangles)
-
-    sample_buffer[y*sqrt(sample_rate) * width + x*sqrt(sample_rate)] = c;
+      if (sample_no < 0) {
+          for (int i = 0; i < sample_rate; i++) {
+              sample_buffer[y*(sample_rate) * width + x*(sample_rate) + i] = c;
+          }
+      }
+      else {
+          sample_buffer[y*(sample_rate) * width + x*(sample_rate) + sample_no] = c;
+      }
+    
   }
 
   // Rasterize a point: simple example to help you start familiarizing
@@ -37,7 +44,7 @@ namespace CGL {
     if (sx < 0 || sx >= width) return;
     if (sy < 0 || sy >= height) return;
 
-    fill_pixel(sx, sy, color);
+    fill_pixel(sx, sy, color, -1);
     return;
   }
 
@@ -69,18 +76,27 @@ namespace CGL {
     float x1, float y1,
     float x2, float y2,
     Color color) {
+      
+      rasterize_line(x0, y0, x1, y1, color);
+      rasterize_line(x1, y1, x2, y2, color);
+      rasterize_line(x2, y2, x0, y0, color);
     // TODO: Task 1: Implement basic triangle rasterization here, no supersampling
     float left_bound = std::min({ x0, x1, x2 });
     float right_bound = std::max({ x0, x1, x2 });
     float t_bound = std::min({ y0, y1, y2 });
     float b_bound = std::max({ y0, y1, y2 });
-    for (float i = t_bound; i < b_bound; i += 1/sqrt(this->sample_rate)) {
-        for (float j = left_bound; j < right_bound; j += 1/sqrt(this->sample_rate)) {
-            float x = j + .5*(1/sqrt(this->sample_rate));
-            float y = i + .5*(1/sqrt(this->sample_rate));
-            if (inside(x, y, x0, y0, x1, y1, x2, y2)) {
-                fill_pixel(x, y, color);
+    for (float i = t_bound; i < b_bound; i += 1) {
+        for (float j = left_bound; j < right_bound; j += 1) {
+            for (int x_sub = 0; x_sub < sqrt(sample_rate); x_sub ++) {
+                for (int y_sub = 0; y_sub < sqrt(sample_rate); y_sub ++) {
+                    float x = j + .5*(1/sqrt(this->sample_rate)) + x_sub*1/sqrt(this->sample_rate);
+                    float y = i + .5*(1/sqrt(this->sample_rate)) + y_sub*1/sqrt(this->sample_rate);
+                    if (inside(x, y, x0, y0, x1, y1, x2, y2)) {
+                        fill_pixel(j, i, color, x_sub+y_sub*sqrt(sample_rate));
+                    }
+                }
             }
+            
         }
     }
         // TODO: Task 2: Update to implement super-sampled rasterization
@@ -131,11 +147,11 @@ namespace CGL {
 
   void RasterizerImp::set_sample_rate(unsigned int rate) {
     // TODO: Task 2: You may want to update this function for supersampling support
-
+      
     this->sample_rate = rate;
 
-
     this->sample_buffer.resize(width * height * rate, Color::White);
+    clear_buffers();
   }
 
 
@@ -151,6 +167,7 @@ namespace CGL {
       
 
     this->sample_buffer.resize(width * height * this->sample_rate, Color::White);
+      clear_buffers();
   }
 
 
@@ -168,18 +185,15 @@ namespace CGL {
   void RasterizerImp::resolve_to_framebuffer() {
     // TODO: Task 2: You will likely want to update this function for supersampling support
 
-
     for (int x = 0; x < width; ++x) {
       for (int y = 0; y < height; ++y) {
           Color my_col = Color(0,0,0);
-          for (float x_sub = .5*(1/sqrt(this->sample_rate)); x_sub < 1; x_sub += 1/sqrt(this->sample_rate)) {
-              for (float y_sub = .5*(1/sqrt(this->sample_rate)); y_sub < 1; y_sub += 1/sqrt(this->sample_rate)) {
-                  Color temp_col = Color(0,0,0);
-                  temp_col = sample_buffer[y*sqrt(sample_rate) * width + x*sqrt(sample_rate)];
+          for (int sub = 0; sub < sample_rate; sub ++) {
+                  //temp_col = sample_buffer[(int)((y+y_sub)*width*sample_rate + (x+x_sub)*sqrt(sample_rate))];
+                  Color temp_col = sample_buffer[(int)(y*width*(sample_rate) + x*(sample_rate) + sub)];
                   my_col.r += temp_col.r * 1/sample_rate;
                   my_col.g += temp_col.g * 1/sample_rate;
                   my_col.b += temp_col.b * 1/sample_rate;
-              }
           }
         //Color col = sample_buffer[y * width + x];
 
