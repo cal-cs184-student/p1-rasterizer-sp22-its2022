@@ -71,11 +71,36 @@ namespace CGL {
     float x2, float y2,
     Color color) {
     // TODO: Task 1: Implement basic triangle rasterization here, no supersampling
+    float left_bound = std::min({ x0, x1, x2 });
+    float right_bound = std::max({ x0, x1, x2 });
+    float t_bound = std::min({ y0, y1, y2 });
+    float b_bound = std::max({ y0, y1, y2 });
+    for (int i = t_bound; i < b_bound; i++) {
+        for (int j = left_bound; j < right_bound; j++) {
+            float x = j + .5;
+            float y = i + .5;
+            if (inside(x, y, x0, y0, x1, y1, x2, y2)) {
+                fill_pixel(x, y, color);
+            }
+        }
+    }
+        // TODO: Task 2: Update to implement super-sampled rasterization
 
-    // TODO: Task 2: Update to implement super-sampled rasterization
+  }
 
+  bool RasterizerImp::inside(float x, float y, float x0, float y0, float x1, float y1, float x2, float y2) {
 
+      float first = l_func(x, y, x0, y0, x1, y1);
+      float second = l_func(x, y, x1, y1, x2, y2);
+      float third = l_func(x, y, x2, y2, x0, y0);
+      return (first >= 0 && second >= 0 && third >= 0) || (first <= 0 && second <= 0 && third <= 0);
 
+  }
+
+  float RasterizerImp::l_func(float sample_x, float sample_y, float line_x0, float line_y0, float line_x1, float line_y1) {
+      float dx = (line_x1 - line_x0);
+      float dy = (line_y1 - line_y0);
+      return -1 * (sample_x - line_x0) * dy + (sample_y - line_y0) * dx;
   }
 
 

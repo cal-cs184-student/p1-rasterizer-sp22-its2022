@@ -89,6 +89,10 @@ namespace CGL {
     // P0 = (x, y)
     void rasterize_point(float x, float y, Color color);
 
+    bool inside(float x, float y, float x0, float y0, float x1, float y1, float x2, float y2);
+
+    float l_func(float sample_x, float sample_y, float line_x0, float line_y0, float line_x1, float line_y1);
+
     // Rasterize a line
     // From P0 = (x0, y0)
     // To   P1 = (x1, y1)
