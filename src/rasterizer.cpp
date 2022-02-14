@@ -22,12 +22,12 @@ namespace CGL {
     // NOTE: You are not required to implement proper supersampling for points and lines
     // It is sufficient to use the same color for all supersamples of a pixel for points and lines (not triangles)
       if (sample_no < 0) {
-          for (int i = 0; i < sample_rate; i++) {
-              sample_buffer[y*(sample_rate) * width + x*(sample_rate) + i] = c;
+          for (int i = 0; i < this->sample_rate; i++) {
+              sample_buffer[y*(this->sample_rate) * this->width + x*(this->sample_rate) + i] = c;
           }
       }
       else {
-          sample_buffer[y*(sample_rate) * width + x*(sample_rate) + sample_no] = c;
+          sample_buffer[y*(this->sample_rate) * this->width + x*(this->sample_rate) + sample_no] = c;
       }
     
   }
@@ -77,20 +77,17 @@ namespace CGL {
     float x2, float y2,
     Color color) {
       
-      rasterize_line(x0, y0, x1, y1, color);
-      rasterize_line(x1, y1, x2, y2, color);
-      rasterize_line(x2, y2, x0, y0, color);
     // TODO: Task 1: Implement basic triangle rasterization here, no supersampling
-    float left_bound = std::min({ x0, x1, x2 });
-    float right_bound = std::max({ x0, x1, x2 });
-    float t_bound = std::min({ y0, y1, y2 });
-    float b_bound = std::max({ y0, y1, y2 });
-    for (float i = t_bound; i < b_bound; i += 1) {
-        for (float j = left_bound; j < right_bound; j += 1) {
+    int left_bound = (int)floor(std::min({ x0, x1, x2 }));
+    int right_bound = (int)floor(std::max({ x0, x1, x2 }));
+    int t_bound = (int)floor(std::min({ y0, y1, y2 }));
+    int b_bound = (int)floor(std::max({ y0, y1, y2 }));
+    for (int i = t_bound; i <= b_bound; i += 1) {
+        for (int j = left_bound; j <= right_bound; j += 1) {
             for (int x_sub = 0; x_sub < sqrt(sample_rate); x_sub ++) {
                 for (int y_sub = 0; y_sub < sqrt(sample_rate); y_sub ++) {
-                    float x = j + .5*(1/sqrt(this->sample_rate)) + x_sub*1/sqrt(this->sample_rate);
-                    float y = i + .5*(1/sqrt(this->sample_rate)) + y_sub*1/sqrt(this->sample_rate);
+                    float x = j + .5*(1.0/sqrt(this->sample_rate)) + x_sub*1.0/sqrt(this->sample_rate);
+                    float y = i + .5*(1.0/sqrt(this->sample_rate)) + y_sub*1.0/sqrt(this->sample_rate);
                     if (inside(x, y, x0, y0, x1, y1, x2, y2)) {
                         fill_pixel(j, i, color, x_sub+y_sub*sqrt(sample_rate));
                     }
@@ -190,10 +187,10 @@ namespace CGL {
           Color my_col = Color(0,0,0);
           for (int sub = 0; sub < sample_rate; sub ++) {
                   //temp_col = sample_buffer[(int)((y+y_sub)*width*sample_rate + (x+x_sub)*sqrt(sample_rate))];
-                  Color temp_col = sample_buffer[(int)(y*width*(sample_rate) + x*(sample_rate) + sub)];
-                  my_col.r += temp_col.r * 1/sample_rate;
-                  my_col.g += temp_col.g * 1/sample_rate;
-                  my_col.b += temp_col.b * 1/sample_rate;
+                  Color temp_col = sample_buffer[(y*width*(sample_rate) + x*(sample_rate) + sub)];
+                  my_col.r += temp_col.r * 1.0/float(sample_rate);
+                  my_col.g += temp_col.g * 1.0/float(sample_rate);
+                  my_col.b += temp_col.b * 1.0/float(sample_rate);
           }
         //Color col = sample_buffer[y * width + x];
 
