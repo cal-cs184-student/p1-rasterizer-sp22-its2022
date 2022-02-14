@@ -8,7 +8,8 @@ namespace CGL {
 
   Color Texture::sample(const SampleParams& sp) {
     // TODO: Task 6: Fill this in.
-      return sample_nearest(sp.p_uv, 0);
+      //return sample_nearest(sp.p_uv, 0);
+      return sample_bilinear(sp.p_uv, 0);
 
 // return magenta for invalid level
   //  return Color(1, 0, 1);
@@ -41,6 +42,38 @@ namespace CGL {
   Color Texture::sample_bilinear(Vector2D uv, int level) {
     // TODO: Task 5: Fill this in.
     auto& mip = mipmap[level];
+      float x = uv.x*width;
+      float y = uv.y*height;
+      int x_left = floor(x);
+      int x_right = ceil(x);
+      int y_top = floor(y);
+      int y_bot = ceil(y);
+      
+      if (x_left <= 0) {
+          x_left = round(x);
+      }
+      if (x_right >= width) {
+          x_right = round(x);
+      }
+      
+      if (y_top <= 0) {
+          y_top = round(y);
+      }
+      
+      if (y_bot >= height) {
+          y_bot = round(y);
+      }
+      
+      
+      Color top_left = mip.get_texel(x_left, y_top);
+      Color top_right = mip.get_texel(x_right, y_top);
+      Color bot_left = mip.get_texel(x_left, y_bot);
+      Color bot_right = mip.get_texel(x_right, y_bot);
+      
+      Color interp_col = (((y_top - y)*bot_left + (y-y_bot)*top_left) * ((x_right-x) /((x_right-x_left)*(y_top-y_bot)))
+                          + ((y_top - y)*bot_right + (y-y_bot)*top_right)*((x-x_left) /((x_right-x_left)*(y_top-y_bot))) )  ;
+      
+      return interp_col;
 
 
 
