@@ -122,10 +122,36 @@ namespace CGL {
   {
     // TODO: Task 4: Rasterize the triangle, calculating barycentric coordinates and using them to interpolate vertex colors across the triangle
     // Hint: You can reuse code from rasterize_triangle
-
-
+      
+      int left_bound = (int)floor(std::min({ x0, x1, x2 }));
+      int right_bound = (int)floor(std::max({ x0, x1, x2 }));
+      int t_bound = (int)floor(std::min({ y0, y1, y2 }));
+      int b_bound = (int)floor(std::max({ y0, y1, y2 }));
+      for (int i = t_bound; i <= b_bound; i += 1) {
+          for (int j = left_bound; j <= right_bound; j += 1) {
+              for (int x_sub = 0; x_sub < sqrt(sample_rate); x_sub ++) {
+                  for (int y_sub = 0; y_sub < sqrt(sample_rate); y_sub ++) {
+                      float x = j + .5*(1.0/sqrt(this->sample_rate)) + x_sub*1.0/sqrt(this->sample_rate);
+                      float y = i + .5*(1.0/sqrt(this->sample_rate)) + y_sub*1.0/sqrt(this->sample_rate);
+                      Color color = barry(x, y, x0, y0, x1, y1, x2, y2, c0, c1, c2);
+                      if (inside(x, y, x0, y0, x1, y1, x2, y2)) {
+                          fill_pixel(j, i, color, x_sub+y_sub*sqrt(sample_rate));
+                      }
+                  }
+              }
+              
+          }
+      }
 
   }
+
+Color RasterizerImp::barry(float x, float y, float x0, float y0, float x1, float y1, float x2, float y2,Color c0, Color c1, Color c2) {
+    float alpha = (-1*(x-x1) * (y2-y1) + (y-y1)*(x2-x1)) / ( -1*(x0-x1)*(y2-y1) + (y0-y1)*(x2-x1));
+    float beta = (-1*(x-x2) * (y0-y2) + (y-y2)*(x0-x2)) / ( -1*(x1-x2)*(y0-y2) + (y1-y2)*(x0-x2));
+    float gamma = 1 - alpha - beta;
+    return alpha*c0 + beta*c1 + gamma*c2;
+    
+}
 
 
   void RasterizerImp::rasterize_textured_triangle(float x0, float y0, float u0, float v0,

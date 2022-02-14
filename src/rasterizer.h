@@ -90,6 +90,8 @@ namespace CGL {
     void rasterize_point(float x, float y, Color color);
 
     bool inside(float x, float y, float x0, float y0, float x1, float y1, float x2, float y2);
+    
+    Color barry(float x, float y, float x0, float y0, float x1, float y1, float x2, float y2,Color c0, Color c1, Color c2);
 
     float l_func(float sample_x, float sample_y, float line_x0, float line_y0, float line_x1, float line_y1);
 
