@@ -9,7 +9,7 @@ namespace CGL {
   Color Texture::sample(const SampleParams& sp) {
     // TODO: Task 6: Fill this in.
       return sample_nearest(sp.p_uv, 0);
-      //return sample_bilinear(sp.p_uv, 0);
+     // return sample_bilinear(sp.p_uv, 0);
 
 // return magenta for invalid level
   //  return Color(1, 0, 1);
@@ -25,17 +25,19 @@ namespace CGL {
 
   Color MipLevel::get_texel(int tx, int ty) {
       //return Color(1, 0, 1);
+     // std::cout << "TX" << tx << " ";
+      //std::cout << "TY" << ty << " ";
       if (tx < 0) {
           tx = 0;
       }
       if (ty < 0) {
           ty = 0;
       }
-      if (tx > width) {
-          tx = width;
+      if (tx >= width) {
+          tx = width - 1;
       }
-      if (ty > height) {
-          ty = height;
+      if (ty >= height) {
+          ty = height - 1;
       }
       return Color(&texels[tx * 3 + ty * width * 3]);
   }
