@@ -166,8 +166,7 @@ Vector3D RasterizerImp::barry(float x, float y, float x0, float y0, float x1, fl
     // Hint: You can reuse code from rasterize_triangle/rasterize_interpolated_color_triangle
       SampleParams sp = SampleParams();
       sp.psm = psm;;
-    //  sp->p_uv = barry()
-    //  tex.sample(&sp);
+
       int left_bound = (int)floor(std::min({ x0, x1, x2 }));
       int right_bound = (int)floor(std::max({ x0, x1, x2 }));
       int t_bound = (int)floor(std::min({ y0, y1, y2 }));
@@ -179,6 +178,16 @@ Vector3D RasterizerImp::barry(float x, float y, float x0, float y0, float x1, fl
                       float x = j + .5 * (1.0 / sqrt(this->sample_rate)) + x_sub * 1.0 / sqrt(this->sample_rate);
                       float y = i + .5 * (1.0 / sqrt(this->sample_rate)) + y_sub * 1.0 / sqrt(this->sample_rate);
                       Vector3D barry_coords = barry(x, y, x0, y0, x1, y1, x2, y2);
+
+                      //q6
+                      Vector3D bc_dx = barry(x + 1, y, x0, y0, x1, y1, x2, y2);
+                      Vector3D bc_dy = barry(x, y + 1, x0, y0, x1, y1, x2, y2);
+                      Vector2D t_dx = bc_dx.x * Vector2D(u0, v0) + bc_dx.y * Vector2D(u1, v1) + bc_dx.z * Vector2D(u2, v2);
+                      Vector2D t_dy = bc_dy.x * Vector2D(u0, v0) + bc_dy.y * Vector2D(u1, v1) + bc_dy.z * Vector2D(u2, v2);
+                      sp.p_dx_uv = t_dx;
+                      sp.p_dy_uv = t_dy; 
+
+
                       Vector2D tex_coords = barry_coords.x * Vector2D(u0, v0) + barry_coords.y * Vector2D(u1, v1) + barry_coords.z * Vector2D(u2,v2);
                       sp.p_uv = tex_coords;
                       Color color = tex.sample(sp);

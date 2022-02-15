@@ -12,10 +12,29 @@ namespace CGL {
       //return sample_nearest(sp.p_uv, 0);
       //return sample_bilinear(sp.p_uv, 0);
       if (sp.psm == 0) {
-          return sample_nearest(sp.p_uv, 0);
+          if (sp.lsm == 0) {
+              return sample_nearest(sp.p_uv, 0);
+          }
+          else if (sp.lsm == 1) {
+              // nearest appropriate level and pass that to nearest
+            //  return sample_nearest(sp.p_uv, get_level(sp));
+              return sample_nearest(sp.p_uv, 14);
+
+          }
+          else {
+              // continuous number?? then weighted sum
+          }
       }
       else {
-          return sample_bilinear(sp.p_uv, 0);
+          if (sp.lsm == 0) {
+              return sample_bilinear(sp.p_uv, 0);
+          }
+          else if (sp.lsm == 1) {
+              // nearest appropriate level and pass that to bilinear
+          }
+          else {
+              // continuous number?? then weighted sum
+          }
       }
 // return magenta for invalid level
   //  return Color(1, 0, 1);
@@ -23,10 +42,15 @@ namespace CGL {
 
   float Texture::get_level(const SampleParams& sp) {
     // TODO: Task 6: Fill this in.
+      float du_dx = sp.p_dx_uv.x - sp.p_uv.x;
+      float dv_dx = sp.p_dx_uv.y - sp.p_uv.y;
+      float du_dy = sp.p_dy_uv.x - sp.p_uv.x;
+      float dv_dy = sp.p_dy_uv.y - sp.p_uv.y;
+      //are we supposed to multiply these by width and height??? uuuh
+      float dx = sqrt(pow(du_dx, 2) + pow(dv_dx, 2)) * width;
+      float dy = sqrt(pow(du_dy, 2) + pow(dv_dy, 2)) * height;
+      return round(std::max(dx, dy));
 
-
-
-    return 0;
   }
 
   Color MipLevel::get_texel(int tx, int ty) {
