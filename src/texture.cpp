@@ -8,8 +8,8 @@ namespace CGL {
 
   Color Texture::sample(const SampleParams& sp) {
     // TODO: Task 6: Fill this in.
-      return sample_nearest(sp.p_uv, 0);
-     // return sample_bilinear(sp.p_uv, 0);
+      //return sample_nearest(sp.p_uv, 0);
+      return sample_bilinear2(sp.p_uv, 0);
 
 // return magenta for invalid level
   //  return Color(1, 0, 1);
@@ -56,26 +56,29 @@ namespace CGL {
   Color Texture::sample_bilinear(Vector2D uv, int level) {
     // TODO: Task 5: Fill this in.
     auto& mip = mipmap[level];
-      float x = uv.x*width;
-      float y = uv.y*height;
+      uv.x = std::max({0.0, uv.x});
+      uv.x = std::min(1.0, uv.x);
+      uv.y = std::max(0.0, uv.y);
+      uv.y = std::min(1.0, uv.y);
+      float x = uv.x*(mip.width-1);
+      float y = uv.y*(mip.height-1);
       int x_left = floor(x);
       int x_right = ceil(x);
       int y_top = floor(y);
       int y_bot = ceil(y);
       
-      if (x_left <= 0) {
-          x_left = round(x);
-      }
-      if (x_right >= width) {
-          x_right = round(x);
-      }
       
-      if (y_top <= 0) {
-          y_top = round(y);
+      if (x_left < 0) {
+          x_left = 0;
       }
-      
-      if (y_bot >= height) {
-          y_bot = round(y);
+      if (y_top < 0) {
+          y_top = 0;
+      }
+      if (x_right >= mip.width) {
+          x_right = mip.width - 1;
+      }
+      if (y_bot >= mip.height) {
+          y_bot = mip.height -1;
       }
       
       
@@ -86,17 +89,28 @@ namespace CGL {
       
       Color interp_col = (((y_top - y)*bot_left + (y-y_bot)*top_left) * ((x_right-x) /((x_right-x_left)*(y_top-y_bot)))
                           + ((y_top - y)*bot_right + (y-y_bot)*top_right)*((x-x_left) /((x_right-x_left)*(y_top-y_bot))) )  ;
-      
+      //return Color(1,0,1);
       return interp_col;
 
 
 
 
     // return magenta for invalid level
-    return Color(1, 0, 1);
+    //return Color(1, 0, 1);
   }
 
-
+    Color Texture::sample_bilinear2(Vector2D uv, int level) {
+        auto& mip = mipmap[level];
+        float u = uv.x*mip.width - 0.5;
+        float v = uv.y*mip.height - 0.5;
+        int x = floor(u);
+        int y = floor(v);
+        double u_ratio = u - x;
+        double v_ratio = v - y;
+        double u_opp = 1 - u_ratio;
+        double v_opp = 1 - v_ratio;
+        return (mip.get_texel(x, y)*u_opp + mip.get_texel(x+1, y)*u_ratio)*v_opp + (mip.get_texel(x, y+1)*u_opp + mip.get_texel(x+1, y+1)*u_ratio)*v_ratio;
+    }
 
   /****************************************************************************/
 
