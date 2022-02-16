@@ -23,9 +23,9 @@
 
 <body>
 
-<h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2018</h1>
+<h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2022</h1>
 <h1 align="middle">Project 1: Rasterizer</h1>
-<h2 align="middle">YOUR NAME, CS184-??</h2>
+<h2 align="middle">Ze-Ning Ong, Varun Saran, CS184-its2022</h2>
 
 <br><br>
 
@@ -38,6 +38,84 @@
 
 <h3 align="middle">Part 1: Rasterizing single-color triangles</h3>
 
+<p>Walk through how you rasterize triangles in your own words: </p>
+<p> We iterated through the points in the bounding box and checked whether or not the point was inside the triangle using the equations from lecture. We first made an “inside” function, which simply calls our line function 3 times, for each side of the triangle. To account for whether the points were given in a clockwise or counterclockwise direction, we said that the point was inside the triangle if all 3 line functions were greater than 0, or if all 3 were less than 0. Finally, if the pixel was inside, we called the fill_pixel function given to us. </p>
+
+<p> Explain how your algorithm is no worse than one that checks each sample within the bounding box of the triangle. </p>
+<p> For the x direction, we only sampled between the leftmost and rightmost coordinates given. The same applies for the y direction, but for the lowest and highest y coordinates. This defines the bounding box, so this is no worse than one that checks each sample within the bounding box. Any pixels outside the bounding box must be outside the triangle, so we can safely ignore them. </p>
+
+<p> Show a png screenshot of basic/test4.svg with the default viewing parameters and with the pixel inspector centered on an interesting part of the scene. </p>
+<p> TBDDDD insert screen shot here </p>
+
+<h3 align="middle">Part 2:</h3>
+<p>Walk through your supersampling algorithm and data structures. Why is supersampling useful? What modifications did you make to the rasterization pipeline in the process? Explain how you used supersampling to antialias your triangles.</p>
+
+<p> Supersampling has a frame_buffer which stores RGB values for width*height pixels of the final image in screen space. There is also a temporary sample_buffer, which contains R,G,B values for width*height*sampleing_rate pixels. There are sampling_rate times more pixels than before because we want to break up each pixel into multiple sub-pixels. This way, instead of just checking whether the center of a pixel is inside the triangle, we can check multiple sub-pixels within that pixel. The more sub-pixels that are within the pixel, the sharper the color will be. If there are very few sub-pixels, then it will be a mix of white and the color, so will be a much lighter shade. This helps anti-aliasing because we no longer have sharp jaggies. These jaggies are reduced because we gradually go from a sharp color to white, meaning the sharp color doesn’t stand out.</p>
+
+<p> Show png screenshots of basic/test4.svg with the default viewing parameters and sample rates 1, 4, and 16 to compare them side-by-side. Position the pixel inspector over an area that showcases the effect dramatically; for example, a very skinny triangle corner. Explain why these results are observed.</p>
+<p> TBDDD insert screen shot here and give descriptions</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/image1.png" align="middle" width="400px"/>
+        <figcaption align="middle">sample rate = 1</figcaption>
+      </td>
+      <td>
+        <img src="images/image2.png" align="middle" width="400px"/>
+        <figcaption align="middle">sample rate = 4</figcaption>
+      </td>
+      <td>
+        <img src="images/image2.png" align="middle" width="400px"/>
+        <figcaption align="middle">sample rate = 16</figcaption>
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
+
+
+<h3 align="middle">Part 3: Transforms</h3>
+<p>In this part we implemented scaling translating and rotating.
+  TBDDDDDD show cubeman and explain </p>
+
+
+  <h2 align="middle">Section II: Sampling</h2>
+
+  <h3 align="middle">Part 4: Barycentric coordinates</h3>
+  <p>Explain barycentric coordinates in your own words and use an image to aid you in your explanation. One idea is to use a svg file that plots a single triangle with one red, one green, and one blue vertex, which should produce a smoothly blended color triangle.
+</p>
+<p>Barycentric coordinates are a way to represent points within a triangle. Instead of using x,y coordinates, it uses alpha, beta, and gamma, where these 3 values together form the coordinates of this new coordinate system. Each parameter represents how close the point is to a given corner. As you move further from a corner, it loses the strength of that color, and as you get closer to another corner, it becomes more like that color. This results in a smooth gradient of the 3 colors, as shown in the image below.
+</p>
+
+<p>Show a png screenshot of svg/basic/test7.svg with default viewing parameters and sample rate 1. If you make any additional images with color gradients, include them.
+</p>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/bary.png" align="middle" width="400px"/>
+        <figcaption align="middle">barycentric coordinates interpolates between 3 colors</figcaption>
+      </td>
+      <td>
+        <img src="images/image2.png" align="middle" width="400px"/>
+        <figcaption align="middle">our color wheel</figcaption>
+      </td>
+
+    </tr>
+    <br>
+  </table>
+</div>
+
+
+  <h3 align="middle">Part 5: "Pixel sampling" for texture mapping</h3>
+
+
+  <h3 align="middle">Part 6: "Level sampling" with mipmaps for texture mapping</h3>
+
+
+
 <p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
 
 <div align="middle">
@@ -45,45 +123,35 @@
     <tr>
       <td>
         <img src="images/image1.png" align="middle" width="400px"/>
-        <figcaption align="middle">Caption goes here.</figcaption>
+        <figcaption align="middle">Caption 1 goes here.</figcaption>
       </td>
       <td>
         <img src="images/image2.png" align="middle" width="400px"/>
-        <figcaption align="middle">Caption goes here.</figcaption>
+        <figcaption align="middle">Caption 2 goes here.</figcaption>
       </td>
     </tr>
     <br>
     <tr>
       <td>
         <img src="images/image3.png" align="middle" width="400px"/>
-        <figcaption align="middle">Caption goes here.</figcaption>
+        <figcaption align="middle">Caption 3 goes here.</figcaption>
       </td>
       <td>
         <img src="images/image4.png" align="middle" width="400px"/>
-        <figcaption align="middle">Caption goes here.</figcaption>
+        <figcaption align="middle">Caption 4 goes here.</figcaption>
       </td>
     </tr>
   </table>
 </div>
 
 
-<h3 align="middle">Part 2: Antialiasing triangles</h3>
 
 
 
-<h3 align="middle">Part 3: Transforms</h3>
 
 
 
-<h2 align="middle">Section II: Sampling</h2>
 
-<h3 align="middle">Part 4: Barycentric coordinates</h3>
-
-
-<h3 align="middle">Part 5: "Pixel sampling" for texture mapping</h3>
-
-
-<h3 align="middle">Part 6: "Level sampling" with mipmaps for texture mapping</h3>
 
 
 
