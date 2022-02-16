@@ -46,6 +46,17 @@
 
 <p> <b>Show a png screenshot of basic/test4.svg with the default viewing parameters and with the pixel inspector centered on an interesting part of the scene.</b> </p>
 <p> TBDDDD insert screen shot here </p>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/q1.png" align="middle" width="400px"/>
+        <figcaption align="middle">sample rate = 1</figcaption>
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
 
 <h3 align="middle">Part 2:</h3>
 <p><b>Walk through your supersampling algorithm and data structures. Why is supersampling useful? What modifications did you make to the rasterization pipeline in the process? Explain how you used supersampling to antialias your triangles. </b></p>
@@ -59,15 +70,15 @@
   <table style="width=100%">
     <tr>
       <td>
-        <img src="images/image1.png" align="middle" width="400px"/>
+        <img src="images/q2_1.png" align="middle" width="400px"/>
         <figcaption align="middle">sample rate = 1</figcaption>
       </td>
       <td>
-        <img src="images/image2.png" align="middle" width="400px"/>
+        <img src="images/q2_4.png" align="middle" width="400px"/>
         <figcaption align="middle">sample rate = 4</figcaption>
       </td>
       <td>
-        <img src="images/image2.png" align="middle" width="400px"/>
+        <img src="images/q2_16.png" align="middle" width="400px"/>
         <figcaption align="middle">sample rate = 16</figcaption>
       </td>
     </tr>
@@ -78,8 +89,20 @@
 
 <h3 align="middle">Part 3: Transforms</h3>
 <p>In this part we implemented scaling translating and rotating.
-  TBDDDDDD show cubeman and explain </p>
+  Our cubeman is waving, kind of like when you run into someone you see in an unexpected place, or you meet up with someone and they get there before you so they wave at you as you approach. We think he’s kind of cute and welcoming when he’s waving. To achieve this, we used rotating and scaling to have one arm waving, and the other arm resting at his side.
+</p>
 
+  <div align="middle">
+    <table style="width=100%">
+      <tr>
+        <td>
+          <img src="images/q3_cubeman.png" align="middle" width="400px"/>
+          <figcaption align="middle">cubeman</figcaption>
+        </td>
+      </tr>
+      <br>
+    </table>
+  </div>
 
   <h2 align="middle">Section II: Sampling</h2>
 
@@ -99,7 +122,7 @@
         <figcaption align="middle">barycentric coordinates interpolates between 3 colors</figcaption>
       </td>
       <td>
-        <img src="images/image2.png" align="middle" width="400px"/>
+        <img src="images/q4.png" align="middle" width="400px"/>
         <figcaption align="middle">our color wheel</figcaption>
       </td>
 
@@ -131,6 +154,33 @@ The second method is bilinear_sampling. With this method, we use the 4 known pix
 <p> TBDD ****
 </p>
 
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/q5_bi_1.png" align="middle" width="400px"/>
+        <figcaption align="middle">bilinear with rate = 1</figcaption>
+      </td>
+      <td>
+        <img src="images/q5_bi_16.png" align="middle" width="400px"/>
+        <figcaption align="middle">bilinear with rate = 16</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/q5_near_1.png" align="middle" width="400px"/>
+        <figcaption align="middle">nearest with rate = 1</figcaption>
+      </td>
+      <td>
+        <img src="images/q5_near_16.png" align="middle" width="400px"/>
+        <figcaption align="middle">nearest with rate = 16</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
   <h3 align="middle">Part 6: "Level sampling" with mipmaps for texture mapping</h3>
 
 <p><b>
@@ -156,37 +206,11 @@ Pixel sampling depends on the method used. With nearest_sample, we can have jagg
 </p>
 
 
-<!--
-<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-
-<div align="middle">
-  <table style="width=100%">
-    <tr>
-      <td>
-        <img src="images/image1.png" align="middle" width="400px"/>
-        <figcaption align="middle">Caption 1 goes here.</figcaption>
-      </td>
-      <td>
-        <img src="images/image2.png" align="middle" width="400px"/>
-        <figcaption align="middle">Caption 2 goes here.</figcaption>
-      </td>
-    </tr>
-    <br>
-    <tr>
-      <td>
-        <img src="images/image3.png" align="middle" width="400px"/>
-        <figcaption align="middle">Caption 3 goes here.</figcaption>
-      </td>
-      <td>
-        <img src="images/image4.png" align="middle" width="400px"/>
-        <figcaption align="middle">Caption 4 goes here.</figcaption>
-      </td>
-    </tr>
-  </table>
-</div>
 
 
--->
+
+
+
 
 
 
