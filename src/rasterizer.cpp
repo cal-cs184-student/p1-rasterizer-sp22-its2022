@@ -165,7 +165,8 @@ Vector3D RasterizerImp::barry(float x, float y, float x0, float y0, float x1, fl
     // TODO: Task 6: Set the correct barycentric differentials in the SampleParams struct.
     // Hint: You can reuse code from rasterize_triangle/rasterize_interpolated_color_triangle
       SampleParams sp = SampleParams();
-      sp.psm = psm;;
+      sp.psm = psm;
+      sp.lsm = lsm;
 
       int left_bound = (int)floor(std::min({ x0, x1, x2 }));
       int right_bound = (int)floor(std::max({ x0, x1, x2 }));

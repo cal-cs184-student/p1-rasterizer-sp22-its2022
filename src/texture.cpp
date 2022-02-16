@@ -17,12 +17,15 @@ namespace CGL {
           }
           else if (sp.lsm == 1) {
               // nearest appropriate level and pass that to nearest
-              return sample_nearest(sp.p_uv, get_level(sp));
+              //std::cout << "NEAREST_SAMPLE, LEVEL CHANGED TO 1";
+              //return sample_nearest(sp.p_uv, 0);
+              sample_nearest(sp.p_uv, 8);
             //  return sample_nearest(sp.p_uv, 14);
 
           }
           else {
               // continuous number?? then weighted sum
+              return sample_nearest(sp.p_uv, 0);
           }
       }
       else {
@@ -31,10 +34,12 @@ namespace CGL {
           }
           else if (sp.lsm == 1) {
               // nearest appropriate level and pass that to bilinear
-              return sample_bilinear(sp.p_uv, get_level(sp));
+              return sample_bilinear(sp.p_uv, 0);
+              //return sample_bilinear(sp.p_uv, get_level(sp));
           }
           else {
               // continuous number?? then weighted sum
+              return sample_bilinear(sp.p_uv, 0);
           }
       }
 // return magenta for invalid level
@@ -51,9 +56,9 @@ namespace CGL {
       float dy = sqrt(pow(du_dy, 2) + pow(dv_dy, 2));
       float l = std::max(dx, dy);
       int d = round(log2(l));
-      std::cout << " d" << d;
-      if (d > kMaxMipLevels) {
-          return 16;
+      //std::cout << " d" << d;
+      if (d >= kMaxMipLevels) {
+          return kMaxMipLevels -1;
       }
       else if (d < 0) {
           return 0;
