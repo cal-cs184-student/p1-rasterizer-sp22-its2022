@@ -29,7 +29,7 @@ struct MipLevel {
   // RGB color values
   std::vector<unsigned char> texels;
 
-  Color get_texel(int tx, int ty);
+  Color get_texel(int tx, int ty, MipLevel& mip);
 };
 
 struct Texture {

@@ -19,13 +19,13 @@ namespace CGL {
               // nearest appropriate level and pass that to nearest
               //std::cout << "NEAREST_SAMPLE, LEVEL CHANGED TO 1";
               //return sample_nearest(sp.p_uv, 0);
-              sample_nearest(sp.p_uv, 8);
+              return sample_nearest(sp.p_uv, round(get_level(sp)));
             //  return sample_nearest(sp.p_uv, 14);
 
           }
           else {
               // continuous number?? then weighted sum
-              return sample_nearest(sp.p_uv, 0);
+              return sample_nearest(sp.p_uv, round(get_level(sp)));
           }
       }
       else {
@@ -34,7 +34,7 @@ namespace CGL {
           }
           else if (sp.lsm == 1) {
               // nearest appropriate level and pass that to bilinear
-              return sample_bilinear(sp.p_uv, 0);
+              return sample_bilinear(sp.p_uv, round(get_level(sp)));
               //return sample_bilinear(sp.p_uv, get_level(sp));
           }
           else {
@@ -66,9 +66,10 @@ namespace CGL {
       return d;
   }
 
-  Color MipLevel::get_texel(int tx, int ty) {
+  Color MipLevel::get_texel(int tx, int ty, MipLevel& mip) {
       //return Color(1, 0, 1);
      // std::cout << "TX" << tx << " ";
+      
       //std::cout << "TY" << ty << " ";
       if (tx < 0) {
           tx = 0;
@@ -88,7 +89,7 @@ namespace CGL {
   Color Texture::sample_nearest(Vector2D uv, int level) {
     // TODO: Task 5: Fill this in.
     auto& mip = mipmap[level];
-    return mip.get_texel(round(uv.x * width), round(uv.y * height));
+    return mip.get_texel(round(uv.x * (mip.width -1)), round(uv.y * (mip.height-1)), mip);
 
 
 
@@ -106,7 +107,7 @@ namespace CGL {
         double v_ratio = v - y;
         double u_opp = 1 - u_ratio;
         double v_opp = 1 - v_ratio;
-        return (mip.get_texel(x, y)*u_opp + mip.get_texel(x+1, y)*u_ratio)*v_opp + (mip.get_texel(x, y+1)*u_opp + mip.get_texel(x+1, y+1)*u_ratio)*v_ratio;
+        return (mip.get_texel(x, y, mip)*u_opp + mip.get_texel(x+1, y, mip)*u_ratio)*v_opp + (mip.get_texel(x, y+1, mip)*u_opp + mip.get_texel(x+1, y+1, mip)*u_ratio)*v_ratio;
     }
 
   /****************************************************************************/
