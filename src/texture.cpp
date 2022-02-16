@@ -25,7 +25,10 @@ namespace CGL {
           }
           else {
               // continuous number?? then weighted sum
-              return sample_nearest(sp.p_uv, round(get_level(sp)));
+              float d = get_level(sp);
+              int bot = floor(d);
+              int top = ceil(d);
+              return (d - bot) * sample_nearest(sp.p_uv, top) + (1 + bot - d) * sample_nearest(sp.p_uv, bot);
           }
       }
       else {
@@ -39,7 +42,11 @@ namespace CGL {
           }
           else {
               // continuous number?? then weighted sum
-              return sample_bilinear(sp.p_uv, 0);
+              float d = get_level(sp);
+              int bot = floor(d);
+              int top = ceil(d);
+              return (d - bot) * sample_bilinear(sp.p_uv, top) + (1 + bot - d) * sample_bilinear(sp.p_uv, bot);
+              //return sample_bilinear(sp.p_uv, 0);
           }
       }
 // return magenta for invalid level
@@ -55,9 +62,9 @@ namespace CGL {
       float dx = sqrt(pow(du_dx, 2) + pow(dv_dx, 2));
       float dy = sqrt(pow(du_dy, 2) + pow(dv_dy, 2));
       float l = std::max(dx, dy);
-      int d = round(log2(l));
+      int d = log2(l);
       //std::cout << " d" << d;
-      if (d >= kMaxMipLevels) {
+      if (d >= kMaxMipLevels - 1) {
           return kMaxMipLevels -1;
       }
       else if (d < 0) {
