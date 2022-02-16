@@ -62,7 +62,7 @@ namespace CGL {
       float dx = sqrt(pow(du_dx, 2) + pow(dv_dx, 2));
       float dy = sqrt(pow(du_dy, 2) + pow(dv_dy, 2));
       float l = std::max(dx, dy);
-      int d = log2(l);
+      float d = log2(l);
       //std::cout << " d" << d;
       if (d >= kMaxMipLevels - 1) {
           return kMaxMipLevels -1;
