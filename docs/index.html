@@ -45,7 +45,7 @@
 <p> For the x direction, we only sampled between the leftmost and rightmost coordinates given. The same applies for the y direction, but for the lowest and highest y coordinates. This defines the bounding box, so this is no worse than one that checks each sample within the bounding box. Any pixels outside the bounding box must be outside the triangle, so we can safely ignore them. </p>
 
 <p> <b>Show a png screenshot of basic/test4.svg with the default viewing parameters and with the pixel inspector centered on an interesting part of the scene.</b> </p>
-<p> TBDDDD insert screen shot here </p>
+
 <div align="middle">
   <table style="width=100%">
     <tr>
@@ -64,7 +64,8 @@
 <p> Supersampling has a frame_buffer which stores RGB values for width*height pixels of the final image in screen space. There is also a temporary sample_buffer, which contains R,G,B values for width*height*sampleing_rate pixels. There are sampling_rate times more pixels than before because we want to break up each pixel into multiple sub-pixels. This way, instead of just checking whether the center of a pixel is inside the triangle, we can check multiple sub-pixels within that pixel. The more sub-pixels that are within the pixel, the sharper the color will be. If there are very few sub-pixels, then it will be a mix of white and the color, so will be a much lighter shade. This helps anti-aliasing because we no longer have sharp jaggies. These jaggies are reduced because we gradually go from a sharp color to white, meaning the sharp color doesn’t stand out.</p>
 
 <p> <b> Show png screenshots of basic/test4.svg with the default viewing parameters and sample rates 1, 4, and 16 to compare them side-by-side. Position the pixel inspector over an area that showcases the effect dramatically; for example, a very skinny triangle corner. Explain why these results are observed.</b></p>
-<p> TBDDD insert screen shot here and give descriptions</p>
+<p> With higher sampling rate, there are less jaggies because more smoothing. And less transparent gaps because the average gives us a slight color if part of the pixel (any sub-pixels) are inside the triangel.
+</p>
 
 <div align="middle">
   <table style="width=100%">
@@ -151,7 +152,7 @@ The second method is bilinear_sampling. With this method, we use the 4 known pix
   Comment on the relative differences. Discuss when there will be a large difference between the two methods and why.
 
 </b></p>
-<p> TBDD ****
+<p> From looking at our screenshots, we can see that when the sample rate is high, there is not much of a difference between bilinear and nearest sampling. This is because we are sampling so much that the difference between the nearest pixel and interpolation is minimal. However, when we look at the images with sample rate 1, we can see that the bilinear image looks much more smooth, whereas the nearest image looks much more jagged. Since bilinear sampling interpolates and averages between the nearest coordinates, it is smoother than nearest sampling, which just takes the nearest coordinate’s color.
 </p>
 
 <div align="middle">
@@ -204,6 +205,36 @@ Mipmaps (level sampling)are faster have more memory, and help with antialiasing.
 Pixel sampling depends on the method used. With nearest_sample, we can have jaggies (as described in part 5), while bilinear sampling can smoothen out some of these high frequencies. Bilinear sampling can slow things down a bit because it requires more calculation for each pixel, but it doesnt increase memory usage because we don’t need to store any extra information.
 
 </p>
+
+<p>
+  Using a png file you find yourself, show us four versions of the image, using the combinations of L_ZERO and P_NEAREST, L_ZERO and P_LINEAR, L_NEAREST and P_NEAREST, as well as L_NEAREST and P_LINEAR.
+</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/q60near.png" align="middle" width="400px"/>
+        <figcaption align="middle">L_ZERO, P_NEAREST</figcaption>
+      </td>
+      <td>
+        <img src="images/q6nearnear.png" align="middle" width="400px"/>
+        <figcaption align="middle">L_NEAREST, P_NEAREST</figcaption>
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="images/q60bi.png" align="middle" width="400px"/>
+        <figcaption align="middle">L_ZERO,P_LINEAR </figcaption>
+      </td>
+      <td>
+        <img src="images/q6bibi.png" align="middle" width="400px"/>
+        <figcaption align="middle">L_NEAREST, P_LINEAR</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
 
 
 
