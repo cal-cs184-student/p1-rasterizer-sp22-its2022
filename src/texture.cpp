@@ -77,13 +77,13 @@ namespace CGL {
       if (ty < 0) {
           ty = 0;
       }
-      if (tx >= width) {
-          tx = width - 1;
+      if (tx >= mip.width) {
+          tx = mip.width - 1;
       }
-      if (ty >= height) {
-          ty = height - 1;
+      if (ty >= mip.height) {
+          ty = mip.height - 1;
       }
-      return Color(&texels[tx * 3 + ty * width * 3]);
+      return Color(&mip.texels[tx * 3 + ty * mip.width * 3]);
   }
 
   Color Texture::sample_nearest(Vector2D uv, int level) {
