@@ -17,8 +17,8 @@ namespace CGL {
           }
           else if (sp.lsm == 1) {
               // nearest appropriate level and pass that to nearest
-            //  return sample_nearest(sp.p_uv, get_level(sp));
-              return sample_nearest(sp.p_uv, 14);
+              return sample_nearest(sp.p_uv, get_level(sp));
+            //  return sample_nearest(sp.p_uv, 14);
 
           }
           else {
@@ -31,6 +31,7 @@ namespace CGL {
           }
           else if (sp.lsm == 1) {
               // nearest appropriate level and pass that to bilinear
+              return sample_bilinear(sp.p_uv, get_level(sp));
           }
           else {
               // continuous number?? then weighted sum
@@ -42,15 +43,22 @@ namespace CGL {
 
   float Texture::get_level(const SampleParams& sp) {
     // TODO: Task 6: Fill this in.
-      float du_dx = sp.p_dx_uv.x - sp.p_uv.x;
-      float dv_dx = sp.p_dx_uv.y - sp.p_uv.y;
-      float du_dy = sp.p_dy_uv.x - sp.p_uv.x;
-      float dv_dy = sp.p_dy_uv.y - sp.p_uv.y;
-      //are we supposed to multiply these by width and height??? uuuh
-      float dx = sqrt(pow(du_dx, 2) + pow(dv_dx, 2)) * width;
-      float dy = sqrt(pow(du_dy, 2) + pow(dv_dy, 2)) * height;
-      return round(std::max(dx, dy));
-
+      float du_dx = (sp.p_dx_uv.x - sp.p_uv.x)*width;
+      float dv_dx = (sp.p_dx_uv.y - sp.p_uv.y)*height;
+      float du_dy = (sp.p_dy_uv.x - sp.p_uv.x)*width;
+      float dv_dy = (sp.p_dy_uv.y - sp.p_uv.y)*height;
+      float dx = sqrt(pow(du_dx, 2) + pow(dv_dx, 2));
+      float dy = sqrt(pow(du_dy, 2) + pow(dv_dy, 2));
+      float l = std::max(dx, dy);
+      int d = round(log2(l));
+      std::cout << " d" << d;
+      if (d > kMaxMipLevels) {
+          return 16;
+      }
+      else if (d < 0) {
+          return 0;
+      } 
+      return d;
   }
 
   Color MipLevel::get_texel(int tx, int ty) {
